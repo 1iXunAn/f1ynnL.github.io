@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Hibernate_note2 | F1ynn 的博客</title>
+  <title>Tag: Spring Boot之配置文件 | F1ynn 的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Hibernate中的对象对象状态瞬时态|临时态    transient，session没有缓存对象，数据库也没有对应记录； OID特点：没有值  持久态    persistent，session缓存对象，数据库最终会有记录（事务没有提交也行）; OID特点：有值   特点： HIbernate自动将持久态对象的变化同步到数据库(持久态的ID不允许被修改)  游离态    detached，s">
-<meta name="keywords" content="Hibernate_note2">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Hibernate_note2">
-<meta property="og:url" content="http://yoursite.com/2019/04/26/Hibernate-note2/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="F1ynn 的博客">
+<meta property="og:url" content="http://yoursite.com/tags/Spring-Boot之配置文件/index.html">
 <meta property="og:site_name" content="F1ynn 的博客">
-<meta property="og:description" content="Hibernate中的对象对象状态瞬时态|临时态    transient，session没有缓存对象，数据库也没有对应记录； OID特点：没有值  持久态    persistent，session缓存对象，数据库最终会有记录（事务没有提交也行）; OID特点：有值   特点： HIbernate自动将持久态对象的变化同步到数据库(持久态的ID不允许被修改)  游离态    detached，s">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-05-12T00:55:08.151Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hibernate_note2">
-<meta name="twitter:description" content="Hibernate中的对象对象状态瞬时态|临时态    transient，session没有缓存对象，数据库也没有对应记录； OID特点：没有值  持久态    persistent，session缓存对象，数据库最终会有记录（事务没有提交也行）; OID特点：有值   特点： HIbernate自动将持久态对象的变化同步到数据库(持久态的ID不允许被修改)  游离态    detached，s">
+<meta name="twitter:title" content="F1ynn 的博客">
   
     <link rel="alternative" href="/atom.xml" title="F1ynn 的博客" type="application/atom+xml">
   
@@ -155,267 +150,60 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Hibernate-note2" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      Hibernate_note2
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/05/12/Spring-Boot之配置文件/" class="archive-article-date">
+  	<time datetime="2019-05-12T01:15:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-12</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/05/12/Spring-Boot之配置文件/">Spring Boot之配置文件</a>
     </h1>
   
 
-        
-        <a href="/2019/04/26/Hibernate-note2/" class="archive-article-date">
-  	<time datetime="2019-04-26T02:45:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Hibernate中的对象"><a href="#Hibernate中的对象" class="headerlink" title="Hibernate中的对象"></a>Hibernate中的对象</h3><h4 id="对象状态"><a href="#对象状态" class="headerlink" title="对象状态"></a>对象状态</h4><p>瞬时态|临时态  </p>
-<ul>
-<li>transient，session没有缓存对象，数据库也没有对应记录； OID特点：没有值</li>
-</ul>
-<p>持久态  </p>
-<ul>
-<li>persistent，session缓存对象，数据库最终会有记录（事务没有提交也行）; OID特点：有值  </li>
-<li><strong>特点</strong>： HIbernate自动将持久态对象的变化同步到数据库(持久态的ID不允许被修改)</li>
-</ul>
-<p>游离态  </p>
-<ul>
-<li>detached，session没有缓存对象，数据库有记录; OID特点：有值</li>
-</ul>
-<h3 id="Hibernate的一级缓存-线程级缓存"><a href="#Hibernate的一级缓存-线程级缓存" class="headerlink" title="Hibernate的一级缓存(线程级缓存)"></a>Hibernate的一级缓存(线程级缓存)</h3><h4 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h4><p>当获得一次会话（session），hibernate在session中创建多个集合（map&lt;Serilzable,Object&gt;），用于存放操作数据（PO对象），为程序优化服务，如果之后需要相应的数据，hibernate优先从session缓存中获取，如果有就使用；如果没有再查询数据库。当session关闭时，一级缓存销毁<br><em>Session中快照 ：</em> session第一次查询时从数据库中取出的一份数据拷贝，始终与数据库的记录保持一致，如果缓存的对象与快照一致，则不再向数据库执行操作<br><strong>Query和Criteria的缓存机制：</strong> 查询的结果会组装成对应实体类对象，放入缓存，但查询还是会操作数据库，即每查一次就操作数据库一次 &lt;?&gt;</p>
-<a id="more"></a>
-<h4 id="Session的API"><a href="#Session的API" class="headerlink" title="Session的API"></a>Session的API</h4><ol>
-<li>save(): 瞬时态 转换 持久态 ,会初始化OID  </li>
-<li>persist(): 瞬时态 转换 持久态 ,不会立即初始化OID &lt;?&gt;</li>
-<li>evict(): 持久态 转换 游离态</li>
-<li>clear(): 清空一级缓存</li>
-<li>refresh(): 强制刷新缓存中的对象</li>
-<li>flush(): 提交缓存对象</li>
-<li>saveOrUpdate()：保存或更新</li>
-</ol>
-<h4 id="Session缓存中数据与数据库的数据不同步"><a href="#Session缓存中数据与数据库的数据不同步" class="headerlink" title="Session缓存中数据与数据库的数据不同步"></a>Session缓存中数据与数据库的数据不同步</h4><p>在Session未结束，程序对数据的访问会优先使用Session中的缓存</p>
-<h3 id="Hibernate中的关系映射"><a href="#Hibernate中的关系映射" class="headerlink" title="Hibernate中的关系映射"></a>Hibernate中的关系映射</h3><h4 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h4><p>实体类<br>“在一的一方使用HashSet放入多的一方的对象，基于HashSet的特性，保证了一对多关系”</p>
-<pre><code>private Set&lt;Entity&gt; entity = new HsahSet&lt;Entity&gt;();
-</code></pre><p>映射文件</p>
-<pre><code>&lt;!-- 表达一对多的关系 &gt;
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;!DOCTYPE hibernate-mapping PUBLIC 
-&quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
-&quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
- &lt;hibernate-mapping package=&quot;com.itheima.domain&quot; &gt;
-     &lt;class name=&quot;Customer&quot; table=&quot;t_customer&quot;  &gt;
-        &lt;id name=&quot;id&quot; column=&quot;id&quot;    &gt;
-            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
-        &lt;/id&gt;     
-        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot; &gt;&lt;/property&gt;
-
-         &lt;!-- 表达一对多关系中的集合
-             name:集合的属性名称
-             inverse: 是否将关系的维护反转给对方. 默认值: false
-                    true: 在Customer 中 放弃维护外键关系
-
-             cascade :级联操作
-                 save-update：级联保存,级联修改. 保存A时,同时保存B. 
-                delete：删除A，同时删除B，AB都不存在
-                delete-orphan：孤儿删除，解除关系，同时将B删除，A存在的。
-                如果需要配置多项，使用逗号分隔。&lt;set cascade=&quot;save-update,delete&quot;&gt;
-
-                all : save-update 和 delete 整合
-                all-delete-orphan : 三个整合
-
-              --&gt;
-         &lt;set name=&quot;orders&quot; inverse=&quot;false&quot; cascade=&quot;all-delete-orphan&quot;  &gt;
-             &lt;!--
-                 key 用来描述外键
-                 column : 外键的值
-                  --&gt;
-             &lt;key column=&quot;cid&quot; &gt;&lt;/key&gt;
-             &lt;!-- one-to-many 表达, Customer 与orders 的关系是一对多
-                 class: 表达关联的另一方的完整类名
-                 -&gt;
-             &lt;one-to-many class=&quot;Order&quot; /&gt;
-         &lt;/set&gt;
-     &lt;/class&gt;
- &lt;/hibernate-mapping&gt;
-
-&lt;hibernate-mapping package=&quot;com.itheima.domain&quot; &gt;
-     &lt;class name=&quot;Order&quot; table=&quot;t_order&quot;  &gt;
-        &lt;id name=&quot;id&quot; column=&quot;id&quot;    &gt;
-            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
-        &lt;/id&gt;     
-        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot; &gt;&lt;/property&gt;
-
-         &lt;!-- 表达多对一关系 
-             name: 引用的属性名称
-             column: 外键的列名
-             class: 我引用的Order的完整类名
-         --&gt;
-         &lt;many-to-one name=&quot;customer&quot; column=&quot;cid&quot; class=&quot;Customer&quot;   &gt;&lt;/many-to-one&gt;
-     &lt;/class&gt;
- &lt;/hibernate-mapping&gt;
-</code></pre><h4 id="级联操作-cascade属性"><a href="#级联操作-cascade属性" class="headerlink" title="级联操作(cascade属性)"></a>级联操作(cascade属性)</h4><ul>
-<li>save-update：A保存，同时保存B</li>
-<li>delete：删除A，同时删除B，AB都不存在</li>
-<li>delete-orphan：孤儿删除，解除关系，同时将B删除，A存在的。<br>如果需要配置多项，使用逗号分隔。<set cascade="save-update,delete"></set></li>
-<li>all : save-update 和 delete 整合</li>
-<li>all-delete-orphan : 三个整合</li>
-</ul>
-<p>​<br>​    </p>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Hibernate_note2</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring Boot之配置文件</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/04/26/Hibernate-note2/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/05/07/HashMap源码之JDK1-7/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          HashMap源码之JDK1.7
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/04/25/HTTP协议/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">HTTP协议</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -438,9 +226,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
