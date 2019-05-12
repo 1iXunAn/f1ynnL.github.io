@@ -152,27 +152,31 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-MySQL" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Spring-Boot之入门" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/07/MySQL/">MySQL常用命令</a>
+      <a class="article-title" href="/2019/05/12/Spring-Boot之入门/">Spring Boot之入门</a>
     </h1>
   
 
         
-        <a href="/2019/05/07/MySQL/" class="archive-article-date">
-  	<time datetime="2019-05-07T07:49:23.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-07</time>
+        <a href="/2019/05/12/Spring-Boot之入门/" class="archive-article-date">
+  	<time datetime="2019-05-12T00:44:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="MySQL的常用命令"><a href="#MySQL的常用命令" class="headerlink" title="MySQL的常用命令"></a>MySQL的常用命令</h2>
+        <h3 id="spring-boot-入门"><a href="#spring-boot-入门" class="headerlink" title="spring boot 入门"></a>spring boot 入门</h3><p>浏览器发送一个<strong>/hello</strong>的请求，服务器接受请求并处理，响应一个<strong>hello world</strong>字符串</p>
+<h4 id="1-使用IDEA-创建一个Maven项目"><a href="#1-使用IDEA-创建一个Maven项目" class="headerlink" title="1. 使用IDEA 创建一个Maven项目"></a>1. 使用IDEA 创建一个Maven项目</h4><h4 id="2-在pom-xml中导入springboot依赖"><a href="#2-在pom-xml中导入springboot依赖" class="headerlink" title="2. 在pom.xml中导入springboot依赖"></a>2. 在pom.xml中导入springboot依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fly<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springboot-rumen<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Inherit defaults from Spring Boot --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.20.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Add typical dependencies for a web application --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Package as an executable jar --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/05/12/Spring-Boot之入门/#more">more >></a>
+        
       
 
       
@@ -185,7 +189,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MySQL常用命令</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Spring Boot之入门</a>
         		</li>
       		
 		</ul>
@@ -195,7 +199,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/05/07/MySQL/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/05/12/Spring-Boot之入门/">展开全文 >></a>
         </p>
       
 
@@ -335,84 +339,9 @@
 <li>detached，session没有缓存对象，数据库有记录; OID特点：有值</li>
 </ul>
 <h3 id="Hibernate的一级缓存-线程级缓存"><a href="#Hibernate的一级缓存-线程级缓存" class="headerlink" title="Hibernate的一级缓存(线程级缓存)"></a>Hibernate的一级缓存(线程级缓存)</h3><h4 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h4><p>当获得一次会话（session），hibernate在session中创建多个集合（map&lt;Serilzable,Object&gt;），用于存放操作数据（PO对象），为程序优化服务，如果之后需要相应的数据，hibernate优先从session缓存中获取，如果有就使用；如果没有再查询数据库。当session关闭时，一级缓存销毁<br><em>Session中快照 ：</em> session第一次查询时从数据库中取出的一份数据拷贝，始终与数据库的记录保持一致，如果缓存的对象与快照一致，则不再向数据库执行操作<br><strong>Query和Criteria的缓存机制：</strong> 查询的结果会组装成对应实体类对象，放入缓存，但查询还是会操作数据库，即每查一次就操作数据库一次 &lt;?&gt;</p>
-<h4 id="Session的API"><a href="#Session的API" class="headerlink" title="Session的API"></a>Session的API</h4><ol>
-<li>save(): 瞬时态 转换 持久态 ,会初始化OID  </li>
-<li>persist(): 瞬时态 转换 持久态 ,不会立即初始化OID &lt;?&gt;</li>
-<li>evict(): 持久态 转换 游离态</li>
-<li>clear(): 清空一级缓存</li>
-<li>refresh(): 强制刷新缓存中的对象</li>
-<li>flush(): 提交缓存对象</li>
-<li>saveOrUpdate()：保存或更新</li>
-</ol>
-<h4 id="Session缓存中数据与数据库的数据不同步"><a href="#Session缓存中数据与数据库的数据不同步" class="headerlink" title="Session缓存中数据与数据库的数据不同步"></a>Session缓存中数据与数据库的数据不同步</h4><p>在Session未结束，程序对数据的访问会优先使用Session中的缓存</p>
-<h3 id="Hibernate中的关系映射"><a href="#Hibernate中的关系映射" class="headerlink" title="Hibernate中的关系映射"></a>Hibernate中的关系映射</h3><h4 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h4><p>实体类<br>“在一的一方使用HashSet放入多的一方的对象，基于HashSet的特性，保证了一对多关系”</p>
-<pre><code>private Set&lt;Entity&gt; entity = new HsahSet&lt;Entity&gt;();
-</code></pre><p>映射文件</p>
-<pre><code>&lt;!-- 表达一对多的关系 &gt;
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;!DOCTYPE hibernate-mapping PUBLIC 
-&quot;-//Hibernate/Hibernate Mapping DTD 3.0//EN&quot;
-&quot;http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd&quot;&gt;
- &lt;hibernate-mapping package=&quot;com.itheima.domain&quot; &gt;
-     &lt;class name=&quot;Customer&quot; table=&quot;t_customer&quot;  &gt;
-        &lt;id name=&quot;id&quot; column=&quot;id&quot;    &gt;
-            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
-        &lt;/id&gt;     
-        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot; &gt;&lt;/property&gt;
-
-         &lt;!-- 表达一对多关系中的集合
-             name:集合的属性名称
-             inverse: 是否将关系的维护反转给对方. 默认值: false
-                    true: 在Customer 中 放弃维护外键关系
-
-             cascade :级联操作
-                 save-update：级联保存,级联修改. 保存A时,同时保存B. 
-                delete：删除A，同时删除B，AB都不存在
-                delete-orphan：孤儿删除，解除关系，同时将B删除，A存在的。
-                如果需要配置多项，使用逗号分隔。&lt;set cascade=&quot;save-update,delete&quot;&gt;
-
-                all : save-update 和 delete 整合
-                all-delete-orphan : 三个整合
-
-              --&gt;
-         &lt;set name=&quot;orders&quot; inverse=&quot;false&quot; cascade=&quot;all-delete-orphan&quot;  &gt;
-             &lt;!--
-                 key 用来描述外键
-                 column : 外键的值
-                  --&gt;
-             &lt;key column=&quot;cid&quot; &gt;&lt;/key&gt;
-             &lt;!-- one-to-many 表达, Customer 与orders 的关系是一对多
-                 class: 表达关联的另一方的完整类名
-                 -&gt;
-             &lt;one-to-many class=&quot;Order&quot; /&gt;
-         &lt;/set&gt;
-     &lt;/class&gt;
- &lt;/hibernate-mapping&gt;
-
-&lt;hibernate-mapping package=&quot;com.itheima.domain&quot; &gt;
-     &lt;class name=&quot;Order&quot; table=&quot;t_order&quot;  &gt;
-        &lt;id name=&quot;id&quot; column=&quot;id&quot;    &gt;
-            &lt;generator class=&quot;native&quot;&gt;&lt;/generator&gt;
-        &lt;/id&gt;     
-        &lt;property name=&quot;name&quot; column=&quot;name&quot; type=&quot;string&quot; &gt;&lt;/property&gt;
-
-         &lt;!-- 表达多对一关系 
-             name: 引用的属性名称
-             column: 外键的列名
-             class: 我引用的Order的完整类名
-         --&gt;
-         &lt;many-to-one name=&quot;customer&quot; column=&quot;cid&quot; class=&quot;Customer&quot;   &gt;&lt;/many-to-one&gt;
-     &lt;/class&gt;
- &lt;/hibernate-mapping&gt;
-</code></pre><h4 id="级联操作-cascade属性"><a href="#级联操作-cascade属性" class="headerlink" title="级联操作(cascade属性)"></a>级联操作(cascade属性)</h4><ul>
-<li>save-update：A保存，同时保存B</li>
-<li>delete：删除A，同时删除B，AB都不存在</li>
-<li>delete-orphan：孤儿删除，解除关系，同时将B删除，A存在的。<br>如果需要配置多项，使用逗号分隔。<set cascade="save-update,delete"></set></li>
-<li>all : save-update 和 delete 整合</li>
-<li>all-delete-orphan : 三个整合</li>
-</ul>
-<p>​<br>​    </p>
-
+        
+          <a class="article-more-a" href="/2019/04/26/Hibernate-note2/#more">more >></a>
+        
       
 
       
@@ -490,25 +419,12 @@
 <pre><code>GET  /day08_02/1.html  HTTP/1.1
 </code></pre><p>关于GET和POST请求方式的区别  </p>
 <ul>
-<li>GET请求：明文传输、相对不安全、传输数据量有限  </li>
-<li>POST请求：数据封装在消息正文、相对安全、理论上没有数据量限制<br><a href="http://www.w3school.com.cn/tags/html_ref_httpmethods.asp" target="_blank" rel="noopener">HTTP 方法：GET 对比 POST</a><br>另一种思路（Mark一下）：<a href="https://www.cnblogs.com/logsharing/p/8448446.html" target="_blank" rel="noopener">从TCP/IP协议来看GET和POST</a>  </li>
-</ul>
-<h4 id="请求消息头"><a href="#请求消息头" class="headerlink" title="请求消息头"></a>请求消息头</h4><p><strong>Accept:</strong> 浏览器可接受的MIME类型告诉服务器客户端能接收什么样类型的文件<br><strong>Accept-Charset:</strong> 浏览器通过这个头告诉服务器，它支持哪种字符集<br><strong>Accept-Encoding:</strong> 浏览器能够进行解码的数据编码方式，比如gzip<br><strong>Accept-Language:</strong> 浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到。 可以在浏览器中进行设置。<br><strong>Host:</strong> 初始URL中的主机和端口<br><strong> Referrer:</strong>包含一个URL，用户从该URL代表的页面出发访问当前请求的页面<br><strong>Content-Type:</strong> 内容类型,告诉服务器浏览器传输数据的MIME类型，文件传输的类型application/x-www-form-urlencoded<br><strong>If-Modified-Since:</strong> Wed, 02 Feb 2011 12:04:56 GMT利用这个头与服务器的文件进行比对，如果一致，则从缓存中直接读取文件。<br><strong>User-Agent:</strong> 浏览器类型.<br><strong>Content-Length:</strong> 表示请求消息正文的长度<br><strong>Connection:</strong> 表示是否需要持久连接。如果服务器看到这里的值为“Keep -Alive”，或者看到请求使用的是HTTP 1.1（HTTP 1.1默认进行持久连接<br><strong>Cookie:</strong> Cookie 是由 Web 服务器保存在用户浏览器（客户端）上的小数据文件<br><strong>Date：</strong> Date: Mon, 22 Aug 2011 01:55:39 GMT请求时间GMT  </p>
-<h4 id="消息正文"><a href="#消息正文" class="headerlink" title="消息正文"></a>消息正文</h4><p>当请求方式是POST方式时，才能看见消息正文</p>
-<pre><code>uName=tom&amp;pwd=123(传输的数据)
-</code></pre><h3 id="响应部分"><a href="#响应部分" class="headerlink" title="响应部分"></a>响应部分</h3><h4 id="响应消息行"><a href="#响应消息行" class="headerlink" title="响应消息行"></a>响应消息行</h4><p><strong>包括：传输协议、响应状态码、状态码描述</strong></p>
-<pre><code>HTTP/1.1   200   OK
-</code></pre><p>常见状态码  </p>
-<ul>
-<li>200 一切正常</li>
-<li>302/307 临时重定向</li>
-<li>304 未修改，表示客户机缓存的版本是最新的，客户机可以继续使用它，无需到服务器请求</li>
-<li>404 服务器未找到请求资源</li>
-<li>500 服务器内部错误 </li>
-</ul>
-<h4 id="响应消息头"><a href="#响应消息头" class="headerlink" title="响应消息头"></a>响应消息头</h4><p><strong><em>Location:</em></strong> <a href="http://www.315.org/index.jsp" target="_blank" rel="noopener">http://www.315.org/index.jsp</a> 指示新的资源的位置，通常和302/307一起使用，完成请求重定向<br><strong>Server:</strong> apache tomcat指示服务器的类型<br><strong>Content-Encoding:</strong> gzip服务器发送的数据采用的编码类型<br><strong>Content-Length:</strong> 80 告诉浏览器正文的长度<br><strong>Content-Language:</strong> zh-cn服务发送的文本的语言<br><strong><em>Content-Type:</em></strong> text/html; charset=GB2312服务器发送的内容的MIME类型<br><strong>Last-Modified:</strong> Tue, 11 Jul 2000 18:23:51 GMT文件的最后修改时间<br><strong>Refresh:</strong> 1; url=<a href="http://www.315.org指示客户端刷新频率。单位是秒" target="_blank" rel="noopener">http://www.315.org指示客户端刷新频率。单位是秒</a><br><strong>Content-Disposition:</strong> attachment; filename=aaa.zip指示客户端下载文件<br><strong>Set-Cookie:</strong> SS=Q0=5Lb_nQ; path=/search服务器端发送的Cookie<br><strong>Expires:</strong> -1<br><strong>Cache-Control:</strong> no-cache (1.1)<br><strong>Pragma:</strong> no-cache   (1.0)  表示告诉客户端不要使用缓存<br><strong>Connection:</strong> close/Keep-Alive<br><strong>Date:</strong> Tue, 11 Jul 2000 18:23:51 GMT  </p>
-<h4 id="响应正文"><a href="#响应正文" class="headerlink" title="响应正文"></a>响应正文</h4><p>服务器返回的数据</p>
-
+<li><p>GET请求：明文传输、相对不安全、传输数据量有限  </p>
+</li>
+<li><p>POST请求：数据封装在消息正文、相对安全、理论上没有数据量限制<br><a href="http://www.w3school.com.cn/tags/html_ref_httpmethods.asp" target="_blank" rel="noopener">HTTP 方法：GET 对比 POST</a><br>另一种思路（Mark一下）：<a href="https://www.cnblogs.com/logsharing/p/8448446.html" target="_blank" rel="noopener">从TCP/IP协议来看GET和POST</a>  </p></li></ul>
+        
+          <a class="article-more-a" href="/2019/04/25/HTTP协议/#more">more >></a>
+        
       
 
       
@@ -598,41 +514,9 @@
 </code></pre><h3 id="URL与URI的区别"><a href="#URL与URI的区别" class="headerlink" title="URL与URI的区别"></a>URL与URI的区别</h3><blockquote>
 <p>URL 统一资源定位符 <a href="http://localhost:8080/app/index.jsp" target="_blank" rel="noopener">http://localhost:8080/app/index.jsp</a><br>URI 统一资源标识符 /app/index.jsp<br>URL = 协议+IP+(端口号)+URI</p>
 </blockquote>
-<h3 id="映射虚拟目录"><a href="#映射虚拟目录" class="headerlink" title="映射虚拟目录"></a>映射虚拟目录</h3><p>如果不将应用放到到webapps，也能访问<br>方式一：<br>真实目录 ： d:\myapp<br>虚拟目录 ： <a href="http://localhost:8080/myapp" target="_blank" rel="noopener">http://localhost:8080/myapp</a><br>虚拟目录映射 在config\context.xml  </p>
-<pre><code>&lt;Context path=&quot;/myApp&quot; docBase=&quot;d:\myapp&quot; /&gt;
-</code></pre><p>这种方式需要重启服务器</p>
-<p>方式二：<br>在conf\Catalina\localhost目录下新建一个与应用同名的xml，如myapp.xml  </p>
-<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;Context docBase=&quot;D:\myapp&quot;/&gt;  
-</code></pre><p>不用重启服务器</p>
-<h3 id="配置默认端口、默认应用、默认主页"><a href="#配置默认端口、默认应用、默认主页" class="headerlink" title="配置默认端口、默认应用、默认主页"></a>配置默认端口、默认应用、默认主页</h3><h4 id="默认端口"><a href="#默认端口" class="headerlink" title="默认端口"></a>默认端口</h4><p>在server.xml中  </p>
-<pre><code>&lt;Connector port=&quot;80&quot; protocol=&quot;HTTP/1.1&quot; connectionTimeout=&quot;20000&quot; redirectPort=&quot;8443&quot; /&gt;
-</code></pre><h4 id="默认应用"><a href="#默认应用" class="headerlink" title="默认应用"></a>默认应用</h4><p>把虚拟目录的配置文件改为ROOT.xml即可  </p>
-<h4 id="默认主页"><a href="#默认主页" class="headerlink" title="默认主页"></a>默认主页</h4><p>在web.xml中  </p>
-<pre><code>&lt;welcome-file-list&gt;
-    &lt;welcome-file&gt;index.jsp&lt;/welcome&gt;
-&lt;welcome&gt;  
-</code></pre><h3 id="Tomcat的BIO、NIO、APR模式"><a href="#Tomcat的BIO、NIO、APR模式" class="headerlink" title="Tomcat的BIO、NIO、APR模式"></a>Tomcat的BIO、NIO、APR模式</h3><ol>
-<li>BIO<br>即阻塞式I/O操作，表示Tomcat使用的是传统的Java I/O操作(即java.io包及其子包)。<br>Tomcat在默认情况下，就是以bio模式运行的。遗憾的是，就一般而言，bio模式是三种运行模式中性能最低的一种。<br>我们可以通过Tomcat Manager来查看服务器的当前状态。</li>
-<li>NIO<br>是Java SE 1.4及后续版本提供的一种新的I/O操作方式(即java.nio包及其子包)。<br>Java nio是一个基于缓冲区、并能提供非阻塞I/O操作的Java API，因此nio也被看成是non-blocking I/O的缩写。它拥有比传统I/O操作(bio)更好的并发运行性能。</li>
-<li>APR<br>(Apache Portable Runtime/Apache可移植运行库)，是Apache HTTP服务器的支持库。<br>你可以简单地理解为，Tomcat将以JNI的形式调用Apache HTTP服务器的核心动态链接库来处理文件读取或网络传输操作，从而大大地提高Tomcat对静态文件的处理性能。 Tomcat apr也是在Tomcat上运行高并发应用的首选模式。  </li>
-</ol>
-<h3 id="Tomcat的BIO、NIO、APR的配置"><a href="#Tomcat的BIO、NIO、APR的配置" class="headerlink" title="Tomcat的BIO、NIO、APR的配置"></a>Tomcat的BIO、NIO、APR的配置</h3><h4 id="BIO-server-xml-配置"><a href="#BIO-server-xml-配置" class="headerlink" title="BIO server.xml 配置"></a>BIO server.xml 配置</h4><pre><code>&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot; 
-    connectionTimeout=&quot;20000&quot; 
-    redirectPort=&quot;8443&quot; /&gt;  
-</code></pre><h4 id="NIO-server-xml-配置"><a href="#NIO-server-xml-配置" class="headerlink" title="NIO server.xml 配置"></a>NIO server.xml 配置</h4><pre><code>&lt;Connector port=&quot;8080&quot; protocol=&quot;org.apache.coyote.http11.Http11NioProtocol&quot;
-    connectionTimeout=&quot;20000&quot;
-    redirectPort=&quot;8443&quot; /&gt;
-</code></pre><h4 id="APR-server-xml-配置"><a href="#APR-server-xml-配置" class="headerlink" title="APR server.xml 配置"></a>APR server.xml 配置</h4><pre><code>&lt;Connector port=&quot;8080&quot; protocol=&quot;org.apache.coyote.http11.Http11AprProtocol&quot;
-    connectionTimeout=&quot;20000&quot;
-    redirectPort=&quot;8443&quot; /&gt;
-</code></pre><blockquote>
-<p>三种配置均为重启生效<br>apr模式还需要安装 apr 、 apr-utils 、tomcat-native包，在 /etc/profile 的JAVA变量后面多加一条APR的环境变量</p>
-</blockquote>
-<blockquote>
-<p><a href="https://www.cnblogs.com/limeiky/p/5714294.html" target="_blank" rel="noopener">Tomcat连接池的配置</a></p>
-</blockquote>
-
+        
+          <a class="article-more-a" href="/2019/04/25/Tomcat-note1/#more">more >></a>
+        
       
 
       
@@ -813,104 +697,6 @@ public List&lt;T&gt; findAll() {
 
 
   
-    <article id="post-hexo搭建博客" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/22/hexo搭建博客/">hexo搭建博客</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/22/hexo搭建博客/" class="archive-article-date">
-  	<time datetime="2019-04-22T15:31:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>###安装node.js</p>
-<p>###基于node.js安装hexo</p>
-<pre><code>(powershell)
-npm install -g cnpm --registry=https://registry.npm.taobao.org  利用淘宝镜像源加快速度
-cnpm install -g hexo-cli  安装hexo
-mkdir blog  创建一个文件夹
-cd blog
-hexo init 在该文件夹下初始化hexo
-hexo s(server)  启动hexo预览，福昕阅读会占用4000 的端口号 hexo s -p 5000  -p可以指定端口号
-hexo n &quot;blogname&quot;  新建一个博客
-hexo g  生成博客
-cnpm install hexo-deployer-git --save  安装git部署插件
-hexo d  部署到git
-
-_config.yml 
-    部署的配置
-    deploy:
-      type: git
-      repo: https://github.com/f1ynnL/f1ynnL.github.io.git
-      branch: master
-    修改主题的配置
-    ## Themes: https://hexo.io/themes/
-      theme: yilia
-</code></pre><p>###git仓库<br>    <a href="https://f1ynnl.github.io/" target="_blank" rel="noopener">https://f1ynnl.github.io/</a></p>
-<p>###更换主题<br>    git clone <a href="https://github.com/litten/hexo-theme-yilia.git" target="_blank" rel="noopener">https://github.com/litten/hexo-theme-yilia.git</a> themes/yilia</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">hexo搭建博客</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/22/hexo搭建博客/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -1008,11 +794,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MySQL常用命令</a>
+                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1020,15 +806,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hexo搭建博客</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
+                <a href="javascript:void(0)" class="js-tag color5">Spring Boot之入门</a>
               </li>
             
             <div class="clearfix"></div>

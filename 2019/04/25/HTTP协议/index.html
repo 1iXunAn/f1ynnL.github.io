@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>HTTP协议 | F1ynn 的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="HTTP协议概述HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。   请求部分请求消息行包括：请求方式、URI、传输协议   GET  /day08_02/1.html  HTTP/1.1 关于GET和POST请求方式的区别    GET请求：明文传输、相对不安全、传输数据量有限   POST">
+  <meta name="description" content="HTTP协议概述HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。   请求部分请求消息行包括：请求方式、URI、传输协议   GET  /day08_02/1.html  HTTP/1.1 关于GET和POST请求方式的区别    GET请求：明文传输、相对不安全、传输数据量有限    POS">
 <meta name="keywords" content="HTTP协议">
 <meta property="og:type" content="article">
 <meta property="og:title" content="HTTP协议">
 <meta property="og:url" content="http://yoursite.com/2019/04/25/HTTP协议/index.html">
 <meta property="og:site_name" content="F1ynn 的博客">
-<meta property="og:description" content="HTTP协议概述HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。   请求部分请求消息行包括：请求方式、URI、传输协议   GET  /day08_02/1.html  HTTP/1.1 关于GET和POST请求方式的区别    GET请求：明文传输、相对不安全、传输数据量有限   POST">
+<meta property="og:description" content="HTTP协议概述HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。   请求部分请求消息行包括：请求方式、URI、传输协议   GET  /day08_02/1.html  HTTP/1.1 关于GET和POST请求方式的区别    GET请求：明文传输、相对不安全、传输数据量有限    POS">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-04-25T15:29:41.211Z">
+<meta property="og:updated_time" content="2019-05-12T00:55:12.876Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HTTP协议">
-<meta name="twitter:description" content="HTTP协议概述HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。   请求部分请求消息行包括：请求方式、URI、传输协议   GET  /day08_02/1.html  HTTP/1.1 关于GET和POST请求方式的区别    GET请求：明文传输、相对不安全、传输数据量有限   POST">
+<meta name="twitter:description" content="HTTP协议概述HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。   请求部分请求消息行包括：请求方式、URI、传输协议   GET  /day08_02/1.html  HTTP/1.1 关于GET和POST请求方式的区别    GET请求：明文传输、相对不安全、传输数据量有限    POS">
   
     <link rel="alternative" href="/atom.xml" title="F1ynn 的博客" type="application/atom+xml">
   
@@ -180,8 +180,11 @@
 <pre><code>GET  /day08_02/1.html  HTTP/1.1
 </code></pre><p>关于GET和POST请求方式的区别  </p>
 <ul>
-<li>GET请求：明文传输、相对不安全、传输数据量有限  </li>
-<li>POST请求：数据封装在消息正文、相对安全、理论上没有数据量限制<br><a href="http://www.w3school.com.cn/tags/html_ref_httpmethods.asp" target="_blank" rel="noopener">HTTP 方法：GET 对比 POST</a><br>另一种思路（Mark一下）：<a href="https://www.cnblogs.com/logsharing/p/8448446.html" target="_blank" rel="noopener">从TCP/IP协议来看GET和POST</a>  </li>
+<li><p>GET请求：明文传输、相对不安全、传输数据量有限  </p>
+</li>
+<li><p>POST请求：数据封装在消息正文、相对安全、理论上没有数据量限制<br><a href="http://www.w3school.com.cn/tags/html_ref_httpmethods.asp" target="_blank" rel="noopener">HTTP 方法：GET 对比 POST</a><br>另一种思路（Mark一下）：<a href="https://www.cnblogs.com/logsharing/p/8448446.html" target="_blank" rel="noopener">从TCP/IP协议来看GET和POST</a>  </p>
+<a id="more"></a>
+</li>
 </ul>
 <h4 id="请求消息头"><a href="#请求消息头" class="headerlink" title="请求消息头"></a>请求消息头</h4><p><strong>Accept:</strong> 浏览器可接受的MIME类型告诉服务器客户端能接收什么样类型的文件<br><strong>Accept-Charset:</strong> 浏览器通过这个头告诉服务器，它支持哪种字符集<br><strong>Accept-Encoding:</strong> 浏览器能够进行解码的数据编码方式，比如gzip<br><strong>Accept-Language:</strong> 浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到。 可以在浏览器中进行设置。<br><strong>Host:</strong> 初始URL中的主机和端口<br><strong> Referrer:</strong>包含一个URL，用户从该URL代表的页面出发访问当前请求的页面<br><strong>Content-Type:</strong> 内容类型,告诉服务器浏览器传输数据的MIME类型，文件传输的类型application/x-www-form-urlencoded<br><strong>If-Modified-Since:</strong> Wed, 02 Feb 2011 12:04:56 GMT利用这个头与服务器的文件进行比对，如果一致，则从缓存中直接读取文件。<br><strong>User-Agent:</strong> 浏览器类型.<br><strong>Content-Length:</strong> 表示请求消息正文的长度<br><strong>Connection:</strong> 表示是否需要持久连接。如果服务器看到这里的值为“Keep -Alive”，或者看到请求使用的是HTTP 1.1（HTTP 1.1默认进行持久连接<br><strong>Cookie:</strong> Cookie 是由 Web 服务器保存在用户浏览器（客户端）上的小数据文件<br><strong>Date：</strong> Date: Mon, 22 Aug 2011 01:55:39 GMT请求时间GMT  </p>
 <h4 id="消息正文"><a href="#消息正文" class="headerlink" title="消息正文"></a>消息正文</h4><p>当请求方式是POST方式时，才能看见消息正文</p>
@@ -443,11 +446,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MySQL常用命令</a>
+                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -455,15 +458,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hexo搭建博客</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
+                <a href="javascript:void(0)" class="js-tag color5">Spring Boot之入门</a>
               </li>
             
             <div class="clearfix"></div>

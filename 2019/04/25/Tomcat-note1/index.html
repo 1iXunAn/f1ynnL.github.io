@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="F1ynn 的博客">
 <meta property="og:description" content="Tomcat的目录结构 bin (Tomcat的执行文件) config (配置文件) lib (Tomcat运行时的jar包) logs (日志记录) temp (临时文件) webapps (应用) work (Tomcat的工作目录)  部署应用到Tomcat开放目录部署方式把应用直接复制到Tomcat的webapps目录下 用war包压缩后放到webapps下打包的命令:   jar -c">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-04-27T15:30:04.977Z">
+<meta property="og:updated_time" content="2019-05-12T00:54:40.163Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tomcat_note1">
 <meta name="twitter:description" content="Tomcat的目录结构 bin (Tomcat的执行文件) config (配置文件) lib (Tomcat运行时的jar包) logs (日志记录) temp (临时文件) webapps (应用) work (Tomcat的工作目录)  部署应用到Tomcat开放目录部署方式把应用直接复制到Tomcat的webapps目录下 用war包压缩后放到webapps下打包的命令:   jar -c">
@@ -192,9 +192,9 @@
 </code></pre><h3 id="URL与URI的区别"><a href="#URL与URI的区别" class="headerlink" title="URL与URI的区别"></a>URL与URI的区别</h3><blockquote>
 <p>URL 统一资源定位符 <a href="http://localhost:8080/app/index.jsp" target="_blank" rel="noopener">http://localhost:8080/app/index.jsp</a><br>URI 统一资源标识符 /app/index.jsp<br>URL = 协议+IP+(端口号)+URI</p>
 </blockquote>
-<h3 id="映射虚拟目录"><a href="#映射虚拟目录" class="headerlink" title="映射虚拟目录"></a>映射虚拟目录</h3><p>如果不将应用放到到webapps，也能访问<br>方式一：<br>真实目录 ： d:\myapp<br>虚拟目录 ： <a href="http://localhost:8080/myapp" target="_blank" rel="noopener">http://localhost:8080/myapp</a><br>虚拟目录映射 在config\context.xml  </p>
-<pre><code>&lt;Context path=&quot;/myApp&quot; docBase=&quot;d:\myapp&quot; /&gt;
-</code></pre><p>这种方式需要重启服务器</p>
+<a id="more"></a>
+<h3 id="映射虚拟目录"><a href="#映射虚拟目录" class="headerlink" title="映射虚拟目录"></a>映射虚拟目录</h3><p>如果不将应用放到到webapps，也能访问<br>方式一：<br>真实目录 ： d:\myapp<br>虚拟目录 ： <a href="http://localhost:8080/myapp" target="_blank" rel="noopener">http://localhost:8080/myapp</a><br>虚拟目录映射 在config\context.xml<br>​<br>    <context path="/myApp" docbase="d:\myapp"></context></p>
+<p>这种方式需要重启服务器</p>
 <p>方式二：<br>在conf\Catalina\localhost目录下新建一个与应用同名的xml，如myapp.xml  </p>
 <pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 &lt;Context docBase=&quot;D:\myapp&quot;/&gt;  
@@ -471,11 +471,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MySQL常用命令</a>
+                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -483,15 +483,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">hexo搭建博客</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
+                <a href="javascript:void(0)" class="js-tag color5">Spring Boot之入门</a>
               </li>
             
             <div class="clearfix"></div>
