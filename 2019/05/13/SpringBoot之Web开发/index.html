@@ -8,22 +8,22 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>SpringBoot之Web开发 | F1ynn 的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="SpringBoot的Web开发1、SpringBoot静态资源的映射规则SpringBoot在引入了Web模块后，有关Web的自动配置都在WebMvcAutoConfiguration 这个配置类里面 在引用静态资源时可以用Maven依赖的静态资源或引用项目中的静态资源   访问Maven依赖的静态资源  到webjars官网 去找Maven依赖，引入到pom,xml 123456      &amp;">
+  <meta name="description" content="SpringBoot的Web开发1、SpringBoot静态资源的映射规则SpringBoot在引入了Web模块后，有关Web的自动配置都在WebMvcAutoConfiguration 这个配置类里面 在引用静态资源时可以用Maven依赖的静态资源或引用项目中的静态资源   访问Maven依赖的静态资源  到webjars官网 去找JQuery - wabjars 的Maven依赖，引入到pom">
 <meta name="keywords" content="SpringBoot之Web开发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot之Web开发">
 <meta property="og:url" content="http://yoursite.com/2019/05/13/SpringBoot之Web开发/index.html">
 <meta property="og:site_name" content="F1ynn 的博客">
-<meta property="og:description" content="SpringBoot的Web开发1、SpringBoot静态资源的映射规则SpringBoot在引入了Web模块后，有关Web的自动配置都在WebMvcAutoConfiguration 这个配置类里面 在引用静态资源时可以用Maven依赖的静态资源或引用项目中的静态资源   访问Maven依赖的静态资源  到webjars官网 去找Maven依赖，引入到pom,xml 123456      &amp;">
+<meta property="og:description" content="SpringBoot的Web开发1、SpringBoot静态资源的映射规则SpringBoot在引入了Web模块后，有关Web的自动配置都在WebMvcAutoConfiguration 这个配置类里面 在引用静态资源时可以用Maven依赖的静态资源或引用项目中的静态资源   访问Maven依赖的静态资源  到webjars官网 去找JQuery - wabjars 的Maven依赖，引入到pom">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/05/13/SpringBoot之Web开发/imgs/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/13/SpringBoot之Web开发/imgs/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/13/SpringBoot之Web开发/imgs/3.png">
 <meta property="og:image" content="http://yoursite.com/2019/05/13/SpringBoot之Web开发/imgs/4.png">
-<meta property="og:updated_time" content="2019-05-17T09:31:35.335Z">
+<meta property="og:updated_time" content="2019-05-17T09:34:01.168Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringBoot之Web开发">
-<meta name="twitter:description" content="SpringBoot的Web开发1、SpringBoot静态资源的映射规则SpringBoot在引入了Web模块后，有关Web的自动配置都在WebMvcAutoConfiguration 这个配置类里面 在引用静态资源时可以用Maven依赖的静态资源或引用项目中的静态资源   访问Maven依赖的静态资源  到webjars官网 去找Maven依赖，引入到pom,xml 123456      &amp;">
+<meta name="twitter:description" content="SpringBoot的Web开发1、SpringBoot静态资源的映射规则SpringBoot在引入了Web模块后，有关Web的自动配置都在WebMvcAutoConfiguration 这个配置类里面 在引用静态资源时可以用Maven依赖的静态资源或引用项目中的静态资源   访问Maven依赖的静态资源  到webjars官网 去找JQuery - wabjars 的Maven依赖，引入到pom">
 <meta name="twitter:image" content="http://yoursite.com/2019/05/13/SpringBoot之Web开发/imgs/1.png">
   
     <link rel="alternative" href="/atom.xml" title="F1ynn 的博客" type="application/atom+xml">
@@ -184,7 +184,7 @@
 <p>在引用静态资源时可以用<strong>Maven依赖的静态资源</strong>或引用<strong>项目中的静态资源</strong> </p>
 <ul>
 <li><p><strong>访问Maven依赖的静态资源</strong> </p>
-<p>到<a href="https://www.webjars.org/" target="_blank" rel="noopener">webjars官网</a> 去找Maven依赖，引入到<code>pom,xml</code></p>
+<p>到<a href="https://www.webjars.org/" target="_blank" rel="noopener">webjars官网</a> 去找JQuery - wabjars 的Maven依赖，引入到<code>pom,xml</code></p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">      <span class="comment">&lt;!--引入jQuery-webjars --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.webjars<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jquery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>​</p>
 <p>在<code>WebMvcAutoConfiguration</code> 中有<code>addResourceHandlers()</code> 方法，将所有<strong>/webjars/**</strong> 的请求都映射到</p>
@@ -434,7 +434,7 @@
   
   
     <a href="/2019/05/13/SpringBoot之日志/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">SpringBoot之日志</div>
       <i class="icon-circle-right"></i>
     </a>
   
