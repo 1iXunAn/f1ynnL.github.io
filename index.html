@@ -152,6 +152,288 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-SpringBoot之Web开发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/13/SpringBoot之Web开发/">SpringBoot之Web开发</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/13/SpringBoot之Web开发/" class="archive-article-date">
+  	<time datetime="2019-05-13T08:28:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="SpringBoot的Web开发"><a href="#SpringBoot的Web开发" class="headerlink" title="SpringBoot的Web开发"></a>SpringBoot的Web开发</h2><h3 id="1、SpringBoot静态资源的映射规则"><a href="#1、SpringBoot静态资源的映射规则" class="headerlink" title="1、SpringBoot静态资源的映射规则"></a>1、SpringBoot静态资源的映射规则</h3><p>SpringBoot在引入了Web模块后，有关Web的自动配置都在<figure class="highlight plain"><figcaption><span>这个配置类里面</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在引用静态资源时可以用**Maven依赖的静态资源**或引用**项目中的静态资源** </span><br><span class="line"></span><br><span class="line">- **访问Maven依赖的静态资源** </span><br><span class="line"></span><br><span class="line">  到[webjars官网](https://www.webjars.org/) 去找Maven依赖，引入到```pom,xml``` </span><br><span class="line"></span><br><span class="line">  ```xml</span><br><span class="line">          &lt;!--引入jQuery-webjars --&gt;</span><br><span class="line">  		&lt;dependency&gt;</span><br><span class="line">  			&lt;groupId&gt;org.webjars&lt;/groupId&gt;</span><br><span class="line">  			&lt;artifactId&gt;jquery&lt;/artifactId&gt;</span><br><span class="line">  			&lt;version&gt;3.4.1&lt;/version&gt;</span><br><span class="line">  		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>  ​</p>
+<p>  在<figure class="highlight plain"><figcaption><span>中有```addResourceHandlers()``` 方法，将所有**/webjars/**** 的请求都映射到</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">此路径 **classpath:/META-INF/resources/webjars/** </span><br><span class="line"></span><br><span class="line">```java </span><br><span class="line">@Override</span><br><span class="line">		public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">			if (!this.resourceProperties.isAddMappings()) &#123;</span><br><span class="line">				logger.debug(&quot;Default resource handling disabled&quot;);</span><br><span class="line">				return;</span><br><span class="line">			&#125;</span><br><span class="line">			Duration cachePeriod = this.resourceProperties.getCache().getPeriod();</span><br><span class="line">			CacheControl cacheControl = this.resourceProperties.getCache()</span><br><span class="line">					.getCachecontrol().toHttpCacheControl();</span><br><span class="line">            // 访问Maven依赖的资源</span><br><span class="line">			if (!registry.hasMappingForPattern(&quot;/webjars/**&quot;)) &#123;</span><br><span class="line">				customizeResourceHandlerRegistration(registry</span><br><span class="line">						.addResourceHandler(&quot;/webjars/**&quot;)</span><br><span class="line">						.addResourceLocations(&quot;classpath:/META-INF/resources/webjars/&quot;)</span><br><span class="line">						.setCachePeriod(getSeconds(cachePeriod))</span><br><span class="line">						.setCacheControl(cacheControl));</span><br><span class="line">			&#125;</span><br><span class="line">            //访问项目中的资源</span><br><span class="line">			String staticPathPattern = this.mvcProperties.getStaticPathPattern();</span><br><span class="line">			if (!registry.hasMappingForPattern(staticPathPattern)) &#123;</span><br><span class="line">				customizeResourceHandlerRegistration(</span><br><span class="line">						registry.addResourceHandler(staticPathPattern)</span><br><span class="line">								.addResourceLocations(getResourceLocations(</span><br><span class="line">                                  		//静态资源的路径到ResourceProperties里去找</span><br><span class="line">										this.resourceProperties.getStaticLocations()))</span><br><span class="line">								.setCachePeriod(getSeconds(cachePeriod))</span><br><span class="line">								.setCacheControl(cacheControl));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>  访问路径：localhost:8080/webjars/jquery/3.4.1/jquery.js</p>
+<p>  访问成功:<img src="/2019/05/13/SpringBoot之Web开发/imgs\1.png" alt> </p>
+<p>  ​</p>
+<ul>
+<li><p><strong>访问项目中的静态资源</strong> </p>
+<p>访问项目中静态资源要到<figure class="highlight plain"><figcaption><span>里面去找</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```java</span><br><span class="line">@ConfigurationProperties(prefix = &quot;spring.resources&quot;, ignoreUnknownFields = false)</span><br><span class="line">public class ResourceProperties &#123;</span><br><span class="line"></span><br><span class="line">	private static final String[] CLASSPATH_RESOURCE_LOCATIONS = &#123;</span><br><span class="line">			&quot;classpath:/META-INF/resources/&quot;, &quot;classpath:/resources/&quot;,</span><br><span class="line">			&quot;classpath:/static/&quot;, &quot;classpath:/public/&quot; &#125;;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * Locations of static resources. Defaults to classpath:[/META-INF/resources/,</span><br><span class="line">	 * /resources/, /static/, /public/].</span><br><span class="line">	 */</span><br><span class="line">	private String[] staticLocations = CLASSPATH_RESOURCE_LOCATIONS;</span><br><span class="line"></span><br><span class="line">	public String[] getStaticLocations() &#123;</span><br><span class="line">		return this.staticLocations;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以，项目中的静态资源要放到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;classpath:/META-INF/resources/&quot;, </span><br><span class="line">&quot;classpath:/resources/&quot;,</span><br><span class="line">&quot;classpath:/static/&quot;, </span><br><span class="line">&quot;classpath:/public/&quot;</span><br></pre></td></tr></table></figure>
+<p>这里创建了resources、public、static文件夹</p>
+<p><img src="/2019/05/13/SpringBoot之Web开发/imgs\2.png" alt> </p>
+<p>​访问路径：localhost:8080/asserts/css/signin.css</p>
+<p>访问成功：<img src="/2019/05/13/SpringBoot之Web开发/imgs\3.png" alt></p>
+</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/05/13/SpringBoot之Web开发/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SpringBoot之Web开发</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/13/SpringBoot之Web开发/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SpringBoot之日志" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="常用日志框架"><a href="#常用日志框架" class="headerlink" title="常用日志框架"></a>常用日志框架</h3><table>
+<thead>
+<tr>
+<th>日志门面（抽象层）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JCL（Jakarta Commons Logging）</td>
+</tr>
+<tr>
+<td>SLF4J（Simple LoggingFacade for Java）</td>
+</tr>
+<tr>
+<td>JBoss-logging</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>日志</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>log4j</td>
+</tr>
+<tr>
+<td>log4j2</td>
+</tr>
+<tr>
+<td>jul( java.util.logging )</td>
+</tr>
+<tr>
+<td>logback</td>
+</tr>
+<tr>
+<td>commons-logging</td>
+</tr>
+</tbody>
+</table>
+<p>Spring 是使用的 <strong>JCL+commons-logging </strong> </p>
+<p>SpringBoot使用的是 <strong>SLF4J+logback</strong></p>
+<h3 id="SLF4J的使用"><a href="#SLF4J的使用" class="headerlink" title="SLF4J的使用"></a>SLF4J的使用</h3><p>为了便于灵活的使用日志框架，SLF4J<a href="https://www.slf4j.org/manual.html" target="_blank" rel="noopener">官方参考</a>提供了日志框架的抽象层，具体实现由实际使用的日志框架决定 </p>
+<p><img src="/2019/05/13/SpringBoot之日志/imgs\concrete-bindings.png" alt="SLF4J"></p>
+        
+          <a class="article-more-a" href="/2019/05/13/SpringBoot之日志/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">SpringBoot之日志</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/13/SpringBoot之日志/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SpringBoot之整合Tomcat" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/13/SpringBoot之整合Tomcat/">SpringBoot之整合Tomcat</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/13/SpringBoot之整合Tomcat/" class="archive-article-date">
+  	<time datetime="2019-05-13T00:05:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="SpringBoot应用部署到外部Tomcat"><a href="#SpringBoot应用部署到外部Tomcat" class="headerlink" title="SpringBoot应用部署到外部Tomcat"></a>SpringBoot应用部署到外部Tomcat</h2><p>SpringBoot应用中会自动集成一个内置的Tomcat服务，但实际情况中Tomcat服务器一般是另外部署维护，所以产生了剥离SpringBoot内置Tomcat，将应用部署到外部Tomcat服务器的需求</p>
+<ul>
+<li>在pom,xml中将打包方式改为war</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">packaging</span>&gt;</span>war<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>移除内嵌的Tomcat</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!-- 移除嵌入式tomcat插件 --&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!-- or 这种方式 移除嵌入式tomcat插件 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">       &lt;groupId&gt;org.springframework.boot&lt;&lt;/groupId&gt;</span><br><span class="line">       <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/05/13/SpringBoot之整合Tomcat/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">SpringBoot之整合Tomcat</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/13/SpringBoot之整合Tomcat/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Spring-Boot之配置文件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -892,7 +1174,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Spring Boot之入门</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -900,7 +1182,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Spring Boot之入门</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">SpringBoot之整合Tomcat</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -908,11 +1198,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">SpringBoot之日志</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
+                <a href="javascript:void(0)" class="js-tag color2">SpringBoot之Web开发</a>
               </li>
              
               <li class="article-tag-list-item">
