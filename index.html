@@ -152,6 +152,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Docker-入门" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/17/Docker-入门/">Docker-入门</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/17/Docker-入门/" class="archive-article-date">
+  	<time datetime="2019-05-17T10:28:24.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1、Docker简介"><a href="#1、Docker简介" class="headerlink" title="1、Docker简介"></a>1、Docker简介</h3><p>Docker是一个开源的应用容器引擎，一个轻量级的容器技术</p>
+<p>Docker支持将软件编译成一个镜像，然后在镜像中各种软件做好配置，将镜像发布出去，其他使用者可以直接使<br>用这个镜像； </p>
+<h3 id="2、Docker的核心概念"><a href="#2、Docker的核心概念" class="headerlink" title="2、Docker的核心概念"></a>2、Docker的核心概念</h3><table>
+<thead>
+<tr>
+<th>Docker</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Host（主机）</td>
+<td>安装了Docker程序的机器(直接装在操作系统上)</td>
+</tr>
+<tr>
+<td>Client（客户端）</td>
+<td>连接Docker主机的</td>
+</tr>
+<tr>
+<td>Registry（仓库）</td>
+<td>保存了各种软件的镜像</td>
+</tr>
+<tr>
+<td>images（镜像）</td>
+<td>打包好的软件镜像</td>
+</tr>
+<tr>
+<td>Container（容器）</td>
+<td>镜像启动后的实例称为一个容器，容器是独立运行的<strong>一个或一组应用</strong></td>
+</tr>
+</tbody>
+</table>
+<p><a href="https://hub.docker.com/search?q=&amp;type=image" target="_blank" rel="noopener">Docker Hub</a> 仓库</p>
+        
+          <a class="article-more-a" href="/2019/05/17/Docker-入门/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Docker-入门</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/17/Docker-入门/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-SpringBoot之Web开发" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -976,134 +1084,10 @@
 
 
   
-    <article id="post-SSH的持久层设计" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/23/SSH的持久层设计/">SSH框架持久层设计</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/23/SSH的持久层设计/" class="archive-article-date">
-  	<time datetime="2019-04-23T03:13:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="设计持久层-基于泛型-反射"><a href="#设计持久层-基于泛型-反射" class="headerlink" title="设计持久层(基于泛型+反射)"></a>设计持久层(基于泛型+反射)</h3><pre><code>IBaseDao(抽取持久层通用方法)    实现IBaseDaoImpl
-  继承                        继承
-IUserDao                  实现UserDaoImpl
-</code></pre><h3 id="IBaseDaoImpl-的具体实现"><a href="#IBaseDaoImpl-的具体实现" class="headerlink" title="IBaseDaoImpl 的具体实现"></a>IBaseDaoImpl 的具体实现</h3><pre><code>/**
- * 实现持久层通用方法
- * @author lsq_adm
- *
- * @param &lt;T&gt;
- */
-public class IBaseDaoImpl&lt;T&gt;  extends HibernateDaoSupport implements IBaseDao&lt;T&gt;  {
-/* 为了通用查找方法的实现，在查找时需要动态传入要查找的实体类型
- * 分析：
- * 1.声明entityClass成员变量，通过构造方法注入entityClass
- * 2.在继承体系上，最终会有具体的实现类继承IBaseDaoImpl&lt;T&gt;如(userDaoImpl&lt;User&gt;)来完成实体的持久化
- * 3.所以，当userDaoImpl&lt;User&gt;实例化时，构造方法会调用父类的构造，那么在父类的构造中就可以完成动态的获取实体类型
- */
-private Class&lt;T&gt; entityClass;
-
-//***重要***
-public IBaseDaoImpl(){
-    //得到父类的类型
-    //debug 查看变量值 ctrl shift i
-    ParameterizedType genericSuperclass = (ParameterizedType) this.getClass().getGenericSuperclass();
-    //得到父类上的泛型数组
-    Type[] actualType = genericSuperclass.getActualTypeArguments();
-    entityClass = (Class&lt;T&gt;) actualType[0];
-}
-
-//注入sessionFactory
-@Resource
-public void mySessionFactory(SessionFactory sessionFactory){
-    super.setSessionFactory(sessionFactory);
-}
-
-@Override
-public void save(T entity) {
-    // TODO Auto-generated method stub
-    this.getHibernateTemplate().save(entity);
-
-}
-
-
-@Override
-public T findById(Serializable id) {
-    // TODO Auto-generated method stub
-    return this.getHibernateTemplate().get(entityClass, id);
-}
-
-@Override
-public List&lt;T&gt; findAll() {
-    String hql = &quot;from &quot; + entityClass.getSimpleName();
-    return this.getHibernateTemplate().find(hql);
-}
-
-}
-</code></pre>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SSH框架持久层设计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/23/SSH的持久层设计/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 
 
@@ -1205,11 +1189,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
+                <a href="javascript:void(0)" class="js-tag color1">SSH框架持久层设计</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">SSH框架持久层设计</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1217,11 +1201,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">SpringBoot之整合Tomcat</a>
+                <a href="javascript:void(0)" class="js-tag color4">SpringBoot之日志</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">SpringBoot之日志</a>
+                <a href="javascript:void(0)" class="js-tag color5">SpringBoot之整合Tomcat</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1229,11 +1213,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SpringBoot之Web开发</a>
+                <a href="javascript:void(0)" class="js-tag color5">Docker-入门</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring Boot之配置文件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">SpringBoot之Web开发</a>
               </li>
             
             <div class="clearfix"></div>
