@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>SSH框架持久层设计 | F1ynn 的博客</title>
+  <title>Tag: MySQL | F1ynn 的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="设计持久层(基于泛型+反射)IBaseDao(抽取持久层通用方法)    实现IBaseDaoImpl   继承                        继承 IUserDao                  实现UserDaoImpl IBaseDaoImpl 的具体实现/**  * 实现持久层通用方法  * @author lsq_adm  *  * @param &amp;lt;T&amp;gt;">
-<meta name="keywords" content="SSH框架持久层设计">
-<meta property="og:type" content="article">
-<meta property="og:title" content="SSH框架持久层设计">
-<meta property="og:url" content="http://yoursite.com/2019/04/23/SSH的持久层设计/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="F1ynn 的博客">
+<meta property="og:url" content="http://yoursite.com/tags/MySQL/index.html">
 <meta property="og:site_name" content="F1ynn 的博客">
-<meta property="og:description" content="设计持久层(基于泛型+反射)IBaseDao(抽取持久层通用方法)    实现IBaseDaoImpl   继承                        继承 IUserDao                  实现UserDaoImpl IBaseDaoImpl 的具体实现/**  * 实现持久层通用方法  * @author lsq_adm  *  * @param &amp;lt;T&amp;gt;">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-05-12T00:54:45.092Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SSH框架持久层设计">
-<meta name="twitter:description" content="设计持久层(基于泛型+反射)IBaseDao(抽取持久层通用方法)    实现IBaseDaoImpl   继承                        继承 IUserDao                  实现UserDaoImpl IBaseDaoImpl 的具体实现/**  * 实现持久层通用方法  * @author lsq_adm  *  * @param &amp;lt;T&amp;gt;">
+<meta name="twitter:title" content="F1ynn 的博客">
   
     <link rel="alternative" href="/atom.xml" title="F1ynn 的博客" type="application/atom+xml">
   
@@ -155,225 +150,60 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-SSH的持久层设计" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      SSH框架持久层设计
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/05/18/MySQL/" class="archive-article-date">
+  	<time datetime="2019-05-18T07:06:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-18</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/05/18/MySQL/">MySQL</a>
     </h1>
   
 
-        
-        <a href="/2019/04/23/SSH的持久层设计/" class="archive-article-date">
-  	<time datetime="2019-04-23T03:13:46.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="设计持久层-基于泛型-反射"><a href="#设计持久层-基于泛型-反射" class="headerlink" title="设计持久层(基于泛型+反射)"></a>设计持久层(基于泛型+反射)</h3><pre><code>IBaseDao(抽取持久层通用方法)    实现IBaseDaoImpl
-  继承                        继承
-IUserDao                  实现UserDaoImpl
-</code></pre><h3 id="IBaseDaoImpl-的具体实现"><a href="#IBaseDaoImpl-的具体实现" class="headerlink" title="IBaseDaoImpl 的具体实现"></a>IBaseDaoImpl 的具体实现</h3><pre><code>/**
- * 实现持久层通用方法
- * @author lsq_adm
- *
- * @param &lt;T&gt;
- */
-public class IBaseDaoImpl&lt;T&gt;  extends HibernateDaoSupport implements IBaseDao&lt;T&gt;  {
-/* 为了通用查找方法的实现，在查找时需要动态传入要查找的实体类型
- * 分析：
- * 1.声明entityClass成员变量，通过构造方法注入entityClass
- * 2.在继承体系上，最终会有具体的实现类继承IBaseDaoImpl&lt;T&gt;如(userDaoImpl&lt;User&gt;)来完成实体的持久化
- * 3.所以，当userDaoImpl&lt;User&gt;实例化时，构造方法会调用父类的构造，那么在父类的构造中就可以完成动态的获取实体类型
- */
-private Class&lt;T&gt; entityClass;
-
-//***重要***
-public IBaseDaoImpl(){
-    //得到父类的类型
-    //debug 查看变量值 ctrl shift i
-    ParameterizedType genericSuperclass = (ParameterizedType) this.getClass().getGenericSuperclass();
-    //得到父类上的泛型数组
-    Type[] actualType = genericSuperclass.getActualTypeArguments();
-    entityClass = (Class&lt;T&gt;) actualType[0];
-}
-
-//注入sessionFactory
-@Resource
-public void mySessionFactory(SessionFactory sessionFactory){
-    super.setSessionFactory(sessionFactory);
-}
-
-@Override
-public void save(T entity) {
-    // TODO Auto-generated method stub
-    this.getHibernateTemplate().save(entity);
-
-}
-
-
-@Override
-public T findById(Serializable id) {
-    // TODO Auto-generated method stub
-    return this.getHibernateTemplate().get(entityClass, id);
-}
-
-@Override
-public List&lt;T&gt; findAll() {
-    String hql = &quot;from &quot; + entityClass.getSimpleName();
-    return this.getHibernateTemplate().find(hql);
-}
-
-}
-</code></pre>
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SSH框架持久层设计</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/04/23/SSH的持久层设计/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/04/25/Tomcat-note1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Tomcat_note1
-        
-      </div>
-    </a>
   
   
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -396,9 +226,9 @@ public List&lt;T&gt; findAll() {
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,

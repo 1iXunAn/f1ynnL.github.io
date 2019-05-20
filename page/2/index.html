@@ -152,6 +152,98 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Tomcat-note1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/04/25/Tomcat-note1/">Tomcat_note1</a>
+    </h1>
+  
+
+        
+        <a href="/2019/04/25/Tomcat-note1/" class="archive-article-date">
+  	<time datetime="2019-04-25T10:08:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Tomcat的目录结构"><a href="#Tomcat的目录结构" class="headerlink" title="Tomcat的目录结构"></a>Tomcat的目录结构</h3><ul>
+<li>bin (Tomcat的执行文件)</li>
+<li>config (配置文件)</li>
+<li>lib (Tomcat运行时的jar包)</li>
+<li>logs (日志记录)</li>
+<li>temp (临时文件)</li>
+<li>webapps (应用)</li>
+<li>work (Tomcat的工作目录)</li>
+</ul>
+<h3 id="部署应用到Tomcat"><a href="#部署应用到Tomcat" class="headerlink" title="部署应用到Tomcat"></a>部署应用到Tomcat</h3><h4 id="开放目录部署方式"><a href="#开放目录部署方式" class="headerlink" title="开放目录部署方式"></a>开放目录部署方式</h4><p>把应用直接复制到Tomcat的webapps目录下</p>
+<h4 id="用war包压缩后放到webapps下"><a href="#用war包压缩后放到webapps下" class="headerlink" title="用war包压缩后放到webapps下"></a>用war包压缩后放到webapps下</h4><p>打包的命令:  </p>
+<pre><code>jar -cvf MyApp.jar  
+</code></pre><h4 id="war包放到webapps下会自动解压"><a href="#war包放到webapps下会自动解压" class="headerlink" title="war包放到webapps下会自动解压"></a>war包放到webapps下会自动解压</h4><p>在config目录下的server.xml中有配置  </p>
+<pre><code>&lt;Host appBase=&quot;&quot; autoDeploy=&quot;true&quot; name=&quot;localhost&quot; unpackWARs=&quot;true&quot;&gt;
+</code></pre><h3 id="URL与URI的区别"><a href="#URL与URI的区别" class="headerlink" title="URL与URI的区别"></a>URL与URI的区别</h3><blockquote>
+<p>URL 统一资源定位符 <a href="http://localhost:8080/app/index.jsp" target="_blank" rel="noopener">http://localhost:8080/app/index.jsp</a><br>URI 统一资源标识符 /app/index.jsp<br>URL = 协议+IP+(端口号)+URI</p>
+</blockquote>
+        
+          <a class="article-more-a" href="/2019/04/25/Tomcat-note1/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Tomcat_note1</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/04/25/Tomcat-note1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-SSH的持久层设计" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -377,11 +469,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HTTP协议</a>
+                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+                <a href="javascript:void(0)" class="js-tag color5">Docker-入门</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -389,11 +481,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Hibernate_note2</a>
+                <a href="javascript:void(0)" class="js-tag color2">HTTP协议</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Spring Boot之入门</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -405,19 +505,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Docker-入门</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring Boot之配置文件</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SpringBoot之Web开发</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
             
             <div class="clearfix"></div>
