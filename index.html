@@ -172,7 +172,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><h3 id="1、MySQL的架构总览"><a href="#1、MySQL的架构总览" class="headerlink" title="1、MySQL的架构总览"></a>1、MySQL的架构总览</h3><p><img src="/MySQL/1.png" alt="1"></p>
+        <h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><h3 id="1、MySQL的架构总览"><a href="#1、MySQL的架构总览" class="headerlink" title="1、MySQL的架构总览"></a>1、MySQL的架构总览</h3><p><img src="/2019/05/18/MySQL/imgs\1.png" alt="1"></p>
 <p><strong>查询优化器</strong> ：MySQL会对我们的SQL语句进行优化；</p>
 <p><strong>存储引擎</strong> </p>
 <ul>
@@ -192,11 +192,11 @@
 <h3 id="2、B-Tree和B-Tree"><a href="#2、B-Tree和B-Tree" class="headerlink" title="2、B-Tree和B+Tree"></a>2、B-Tree和B+Tree</h3><p><strong>B-Tree （平衡多路查找树）</strong>：可以显著减少定位记录时所经历的中间过程，从而加快存取速度</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">一个M阶的B-Tree具有的特性</span><br><span class="line">	&gt; 每个节点最多有m个孩子</span><br><span class="line">	&gt; 根节点的孩子数&gt;=2（前提：树的高度大于一）</span><br><span class="line">	&gt; 除了根节点和叶子结点，其他节点的孩子数(ceil(m/2));向上取整</span><br><span class="line">	&gt; 所有的叶子结点都在一层，叶子结点不存储数据</span><br><span class="line">	&gt; 各个结点包含n个关键字信息：(P0,K1,P1,K2,P2......Kn,Pn)</span><br><span class="line">		其中</span><br><span class="line">		- Ki(i=1,2......n)为关键字，且K(i-1)&lt;Ki，即从小到大排序</span><br><span class="line">		- 关键字的个数n必须满足：[ceil(m/2)-1,m-1]</span><br><span class="line">		- Pi指向子树，且指针P(i-1)所指向的子树结点中所有关键字均小于Ki。即：父结点中任何关键字的左孩子都小于它，右孩子大于它</span><br></pre></td></tr></table></figure>
 <p>B-Tree示例图：</p>
-<p><img src="/MySQL/2.png" alt="2"></p>
+<p><img src="/2019/05/18/MySQL/2.png" alt="2"></p>
 <p><strong>B+Tree</strong> ：B+Tree是在B-Tree基础上的一种优化，使其更适合实现外存储索引结构，InnoDB存储引擎就是用B+Tree实现其索引结构</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">B+Tree相对于B-Tree有几点不同：</span><br><span class="line"></span><br><span class="line">    非叶子节点只存储键值信息;</span><br><span class="line">    所有叶子节点之间都有一个链指针;</span><br><span class="line">    数据记录都存放在叶子节点中;</span><br></pre></td></tr></table></figure>
 <p>B+Tree示例图：</p>
-<p><img src="/MySQL/3.png" alt></p>
+<p><img src="/2019/05/18/MySQL/3.png" alt></p>
         
           <a class="article-more-a" href="/2019/05/18/MySQL/#more">more >></a>
         
@@ -1193,11 +1193,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+                <a href="javascript:void(0)" class="js-tag color2">HTTP协议</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HTTP协议</a>
+                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
               </li>
              
               <li class="article-tag-list-item">
