@@ -152,6 +152,262 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-JVM内存模型及垃圾回收机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/22/JVM内存模型及垃圾回收机制/">JVM内存模型及性能调优</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/22/JVM内存模型及垃圾回收机制/" class="archive-article-date">
+  	<time datetime="2019-05-22T08:26:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="JVM内存模型及垃圾回收机制"><a href="#JVM内存模型及垃圾回收机制" class="headerlink" title="JVM内存模型及垃圾回收机制"></a>JVM内存模型及垃圾回收机制</h2><p>JDK7</p>
+<h3 id="1、JVM的内存模型"><a href="#1、JVM的内存模型" class="headerlink" title="1、JVM的内存模型"></a>1、JVM的内存模型</h3><p>JVM在执行Java程序的过程中会把它所管理的内存划分为几个不同的数据区域，这些区域都有自己的用途、创建及销毁时间；</p>
+<p><strong>运行时数据区域</strong>，如图：</p>
+<p><img src="/2019/05/22/JVM内存模型及垃圾回收机制/JVM内存分配.png" alt></p>
+<ul>
+<li><p><strong>程序计数器</strong>：</p>
+<ul>
+<li>当前线程执行的Java方法，则计数器记录的是执行字节码指令的<strong>地址</strong> ；</li>
+<li>执行的是Native方法，则计数器为空（Undefined）；</li>
+<li>线程私有，占较小的内存；</li>
+<li>是虚拟机中<strong>唯一无OutOfMemoryEror的区域</strong>；</li>
+</ul>
+</li>
+<li><p><strong>虚拟机栈</strong>：</p>
+<ul>
+<li>描述Java方法执行的内存模型，每个方法在执行时都会创建一个栈帧（Stack Frame），用于存储局部变量表，操作数栈，动态链接、方法出口等信息（方法的调用和结束，对应栈帧的进栈和出栈）；</li>
+<li><strong>局部变量表</strong> 存放了基本数据、对象引用和returnAddress（一条字节码指令地址），一个局部变量空间是Slot（32位）；</li>
+<li>线程私有，与线程的生命周期相同；</li>
+<li>有两中异常状况：<ul>
+<li>线程请求的栈深度大于虚拟机允许深度 – &gt; <strong>StackOverflowError</strong></li>
+<li>扩展时无法申请到足够内存 – &gt; <strong>OutOfMemoryError</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>本地方法栈</strong></p>
+<ul>
+<li>与虚拟机栈基本相同，处理的是Native方法；</li>
+</ul>
+</li>
+<li><p><strong>堆</strong></p>
+<ul>
+<li>虚拟机启动时创建，用于存放对象的实例；</li>
+<li>垃圾收集器管理的主要区域；</li>
+<li>线程共享，占最大的内存；</li>
+<li>如果堆中没有内存完成实例分配，且无法再扩展则会出现<strong>OutOfMemoryError</strong></li>
+</ul>
+</li>
+<li><p><strong>方法区</strong></p>
+<ul>
+<li>存储被虚拟机加载的类信息、常量、静态变量等信息；</li>
+<li>线程共享；</li>
+<li>当方法区无法满足内存分配需求时会出现<strong>OutOfMemoryError</strong></li>
+<li><strong>运行时常量池</strong>  是方法区的一部分，存放编译期生成的<strong>字面量和符号引用</strong> </li>
+</ul>
+</li>
+<li><p><strong>直接内存</strong></p>
+<p>直接内存不是Java虚拟机运行时数据区的一部分，在JDK1.4加入的NIO（new input/output）类引入了一种基于通道（channel）和缓冲区（buffer）的I/O方式，它使用Native函数库直接分配堆外内存，可以通过Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作；</p>
+</li>
+</ul>
+<h3 id="2、垃圾回收机制"><a href="#2、垃圾回收机制" class="headerlink" title="2、垃圾回收机制"></a>2、垃圾回收机制</h3><p>整理自<a href="https://www.cnblogs.com/xiaoxi/p/6486852.html" target="_blank" rel="noopener">链接</a> </p>
+<h4 id="1）对于对象“已死”的判断方法"><a href="#1）对于对象“已死”的判断方法" class="headerlink" title="1）对于对象“已死”的判断方法"></a>1）对于对象“已死”的判断方法</h4><ul>
+<li><p><strong>引用计数法</strong></p>
+<p>给对象一个引用计数器，每有一个地方引用它就+1，引用失效-1，为0的时候就不再被引用；</p>
+<p>（<strong>难以解决两个对象存在相互引用的情况</strong></p>
+<p>​    A、B对象都有属性instance，当<code>A.instance = B</code>、<code>B.instance= A</code> 的时候他们的引用计数器始终不为0）</p>
+</li>
+<li><p><strong>可达性分析法</strong></p>
+<p>通过一系列称为“GC Roots”的对象作为起始点，从这些节点向下搜索，搜索所走过的路径称为引用链，当一个对象到GC Roots没有任何引用链（即GC Roots到对象不可达）时，则证明此对象是不可用的；</p>
+<p>对于<strong>“GC Roots”</strong> 的选用</p>
+<p>(1) 虚拟机栈（栈帧中的局部变量区，也叫做局部变量表）中引用的对象</p>
+<p>(2) 方法区中的类静态属性引用的对象</p>
+<p>(3) 方法区中常量引用的对象</p>
+<p>(4) 本地方法栈中JNI(Native方法)引用的对象</p>
+</li>
+<li><p><strong>引用</strong> </p>
+<p><img src="/2019/05/22/JVM内存模型及垃圾回收机制/2.png" alt> </p>
+</li>
+</ul>
+<p>（<strong>对象的finalize()方法最多被对象调用一次</strong>）</p>
+<h4 id="2）方法区的垃圾回收"><a href="#2）方法区的垃圾回收" class="headerlink" title="2）方法区的垃圾回收"></a>2）方法区的垃圾回收</h4><p>方法区的垃圾回收主要回收两部分内容：1. 废弃常量，2. 无用的类</p>
+<blockquote>
+<p>如何判断无用的类呢？需要满足以下三个条件</p>
+<ol>
+<li>该类的所有实例都已经被回收，即Java堆中不存在该类的任何实例。</li>
+<li>加载该类的ClassLoader已经被回收。</li>
+<li><p>该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</p>
+<p>满足以上三个条件的类可以进行垃圾回收，但是并不是无用就被回收，虚拟机提供了一些参数供我们配置。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="3）垃圾回收算法"><a href="#3）垃圾回收算法" class="headerlink" title="3）垃圾回收算法"></a>3）垃圾回收算法</h4><h5 id="标记-清除（Mark-Sweep）算法"><a href="#标记-清除（Mark-Sweep）算法" class="headerlink" title="标记-清除（Mark-Sweep）算法"></a>标记-清除（Mark-Sweep）算法</h5><p>这是最基础的算法，标记-清除算法就如同它的名字样，分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，标记完成后统一回收所有被标记的对象。这种算法的不足主要体现在效率和空间，从效率的角度讲，标记和清除两个过程的效率都不高；从空间的角度讲，标记清除后会产生大量不连续的内存碎片，内存碎片太多可能会导致以后程序运行过程中在需要分配较大对象时，无法找到足够的连续内存而不得不提前触发一次垃圾收集动作</p>
+<p><img src="https://images2015.cnblogs.com/blog/249993/201703/249993-20170307205221484-1705867339.png" alt></p>
+<h5 id="复制（Copying）算法"><a href="#复制（Copying）算法" class="headerlink" title="复制（Copying）算法"></a>复制（Copying）算法</h5><p>复制算法是为了解决效率问题而出现的，<strong>它将可用的内存分为两块，每次只用其中一块，当这一块内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已经使用过的内存空间一次性清理掉</strong>。这样每次只需要对整个半区进行内存回收，内存分配时也不需要考虑内存碎片等复杂情况，只需要移动指针，按照顺序分配即可；</p>
+<p>（控制合适的划分比例，可以提高内存的使用率）</p>
+<p><img src="https://images2015.cnblogs.com/blog/249993/201703/249993-20170307205837031-1503624197.png" alt> </p>
+<h5 id="标记-整理（Mark-Compact）算法"><a href="#标记-整理（Mark-Compact）算法" class="headerlink" title="标记-整理（Mark-Compact）算法"></a>标记-整理（Mark-Compact）算法</h5><p>让所有存活对象都向一端移动，然后直接清理掉边界以外的内存</p>
+<p><img src="https://images2015.cnblogs.com/blog/249993/201703/249993-20170308200502734-920263398.png" alt> </p>
+<h5 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h5><p>大批对象死去、少量对象存活的（<strong>新生代</strong>），使用<strong>复制算法</strong>，复制成本低；</p>
+<p>对象存活率高、没有额外空间进行分配担保的（<strong>老年代</strong>），采用<strong>标记-清理算法或者标记-整理算法</strong> </p>
+<p><img src="https://images2015.cnblogs.com/blog/249993/201703/249993-20170308201424313-1417214713.png" alt> </p>
+<h3 id="3、垃圾收集器"><a href="#3、垃圾收集器" class="headerlink" title="3、垃圾收集器"></a>3、垃圾收集器</h3><h3 id="4、性能调优"><a href="#4、性能调优" class="headerlink" title="4、性能调优"></a>4、性能调优</h3><p><strong>JVM内存的系统级的调优主要的目的是减少Minor GC的频率和Full GC的次数，过多的Minor GC和Full GC是会占用很多的系统资源，影响系统的吞吐量</strong> </p>
+<p>##### </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">JVM内存模型及性能调优</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/22/JVM内存模型及垃圾回收机制/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SpringBoot之数据源" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/22/SpringBoot之数据源/">SpringBoot之数据源</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/22/SpringBoot之数据源/" class="archive-article-date">
+  	<time datetime="2019-05-22T08:20:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="SpringBoot之数据源"><a href="#SpringBoot之数据源" class="headerlink" title="SpringBoot之数据源"></a>SpringBoot之数据源</h2><h3 id="1、JDBC"><a href="#1、JDBC" class="headerlink" title="1、JDBC"></a>1、JDBC</h3><h4 id="1）使用JDBC"><a href="#1）使用JDBC" class="headerlink" title="1）使用JDBC"></a>1）使用JDBC</h4><p>SpringBoot提供了JDBC和MYSQL组件，我们只需要将启动器导入，再做好<code>appliction.yml</code>配置，即可使用；</p>
+<p>配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr"> datasource:</span></span><br><span class="line"><span class="attr">   username:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">   password:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">   url:</span> <span class="attr">jdbc:mysql://localhost:8080/mydb4</span></span><br><span class="line"><span class="attr">   driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+<p>测试是否连接上数据库</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith</span>(SpringRunner.class)</span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootdruidApplicationTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	DataSource datasurce;</span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">		System.out.println(datasurce.getClass());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> springboot版本 1.5</span></span><br><span class="line"><span class="comment"> 控制台打印结果，使用的是Tomcat的数据源</span></span><br><span class="line"><span class="comment"> class org.apache.tomcat.jdbc.pool.DataSource</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+<h4 id="2）DataSourceConfiguration"><a href="#2）DataSourceConfiguration" class="headerlink" title="2）DataSourceConfiguration"></a>2）DataSourceConfiguration</h4><p><code>org.springframework.boot.autoconfigure.jdbc.DataSourceConfiguration</code> 这个自动配置类配置了SpringBoot默认支持的数据源</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">createDataSource</span><span class="params">(DataSourceProperties properties,</span></span></span><br><span class="line"><span class="function"><span class="params">			Class&lt;? extends DataSource&gt; type)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> (T) properties.initializeDataSourceBuilder().type(type).build();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Tomcat Pool DataSource configuration.</span></span><br><span class="line"><span class="comment">	   Tomcat数据源</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Configuration</span></span><br><span class="line">	<span class="meta">@ConditionalOnClass</span>(org.apache.tomcat.jdbc.pool.DataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span>(DataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"spring.datasource.type"</span>,</span><br><span class="line">			havingValue = <span class="string">"org.apache.tomcat.jdbc.pool.DataSource"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Tomcat</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Bean</span></span><br><span class="line">		<span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource.tomcat"</span>)</span><br><span class="line">		<span class="keyword">public</span> org.apache.tomcat.jdbc.pool.<span class="function">DataSource <span class="title">dataSource</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">				DataSourceProperties properties)</span> </span>&#123;</span><br><span class="line">			org.apache.tomcat.jdbc.pool.DataSource dataSource = createDataSource(</span><br><span class="line">					properties, org.apache.tomcat.jdbc.pool.DataSource.class);</span><br><span class="line">			DatabaseDriver databaseDriver = DatabaseDriver</span><br><span class="line">					.fromJdbcUrl(properties.determineUrl());</span><br><span class="line">			String validationQuery = databaseDriver.getValidationQuery();</span><br><span class="line">			<span class="keyword">if</span> (validationQuery != <span class="keyword">null</span>) &#123;</span><br><span class="line">				dataSource.setTestOnBorrow(<span class="keyword">true</span>);</span><br><span class="line">				dataSource.setValidationQuery(validationQuery);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> dataSource;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Hikari DataSource configuration.</span></span><br><span class="line"><span class="comment">	   hikari数据源</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Configuration</span></span><br><span class="line">	<span class="meta">@ConditionalOnClass</span>(HikariDataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span>(DataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"spring.datasource.type"</span>,</span><br><span class="line">			havingValue = <span class="string">"com.zaxxer.hikari.HikariDataSource"</span>, matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Hikari</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Bean</span></span><br><span class="line">		<span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource.hikari"</span>)</span><br><span class="line">		<span class="function"><span class="keyword">public</span> HikariDataSource <span class="title">dataSource</span><span class="params">(DataSourceProperties properties)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> createDataSource(properties, HikariDataSource.class);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * DBCP DataSource configuration.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@deprecated</span> as of 1.5 in favor of DBCP2</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Configuration</span></span><br><span class="line">	<span class="meta">@ConditionalOnClass</span>(org.apache.commons.dbcp.BasicDataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span>(DataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"spring.datasource.type"</span>,</span><br><span class="line">			havingValue = <span class="string">"org.apache.commons.dbcp.BasicDataSource"</span>,</span><br><span class="line">			matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line">	<span class="meta">@Deprecated</span></span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Dbcp</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Bean</span></span><br><span class="line">		<span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource.dbcp"</span>)</span><br><span class="line">		<span class="keyword">public</span> org.apache.commons.dbcp.<span class="function">BasicDataSource <span class="title">dataSource</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">				DataSourceProperties properties)</span> </span>&#123;</span><br><span class="line">			org.apache.commons.dbcp.BasicDataSource dataSource = createDataSource(</span><br><span class="line">					properties, org.apache.commons.dbcp.BasicDataSource.class);</span><br><span class="line">			DatabaseDriver databaseDriver = DatabaseDriver</span><br><span class="line">					.fromJdbcUrl(properties.determineUrl());</span><br><span class="line">			String validationQuery = databaseDriver.getValidationQuery();</span><br><span class="line">			<span class="keyword">if</span> (validationQuery != <span class="keyword">null</span>) &#123;</span><br><span class="line">				dataSource.setTestOnBorrow(<span class="keyword">true</span>);</span><br><span class="line">				dataSource.setValidationQuery(validationQuery);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> dataSource;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * DBCP DataSource configuration.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Configuration</span></span><br><span class="line">	<span class="meta">@ConditionalOnClass</span>(org.apache.commons.dbcp2.BasicDataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span>(DataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"spring.datasource.type"</span>,</span><br><span class="line">			havingValue = <span class="string">"org.apache.commons.dbcp2.BasicDataSource"</span>,</span><br><span class="line">			matchIfMissing = <span class="keyword">true</span>)</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Dbcp2</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Bean</span></span><br><span class="line">		<span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource.dbcp2"</span>)</span><br><span class="line">		<span class="keyword">public</span> org.apache.commons.dbcp2.<span class="function">BasicDataSource <span class="title">dataSource</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">				DataSourceProperties properties)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> createDataSource(properties,</span><br><span class="line">					org.apache.commons.dbcp2.BasicDataSource.class);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Generic DataSource configuration.</span></span><br><span class="line"><span class="comment">	   配置文件"spring.datasource.type" 指定其他类型的数据源</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="meta">@Configuration</span></span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span>(DataSource.class)</span><br><span class="line">	<span class="meta">@ConditionalOnProperty</span>(name = <span class="string">"spring.datasource.type"</span>)</span><br><span class="line">	<span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Generic</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Bean</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">(DataSourceProperties properties)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> properties.initializeDataSourceBuilder().build();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3）DataSourceInitializer"><a href="#3）DataSourceInitializer" class="headerlink" title="3）DataSourceInitializer"></a>3）DataSourceInitializer</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DataSourceInitializer</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">DataSourceInitializedEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@PostConstruct</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">// runSchemaScripts() 运行建表语句</span></span><br><span class="line">		runSchemaScripts();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">runSchemaScripts</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		List&lt;Resource&gt; scripts = getScripts(<span class="string">"spring.datasource.schema"</span>,</span><br><span class="line">				<span class="keyword">this</span>.properties.getSchema(), <span class="string">"schema"</span>);</span><br><span class="line">		<span class="keyword">if</span> (!scripts.isEmpty()) &#123;</span><br><span class="line">			String username = <span class="keyword">this</span>.properties.getSchemaUsername();</span><br><span class="line">			String password = <span class="keyword">this</span>.properties.getSchemaPassword();</span><br><span class="line">			runScripts(scripts, username, password);</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="keyword">this</span>.applicationContext</span><br><span class="line">						.publishEvent(<span class="keyword">new</span> DataSourceInitializedEvent(<span class="keyword">this</span>.dataSource));</span><br><span class="line">				<span class="comment">// The listener might not be registered yet, so don't rely on it.</span></span><br><span class="line">				<span class="keyword">if</span> (!<span class="keyword">this</span>.initialized) &#123;</span><br><span class="line">					runDataScripts();</span><br><span class="line">					<span class="keyword">this</span>.initialized = <span class="keyword">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span> (IllegalStateException ex) &#123;</span><br><span class="line">				logger.warn(<span class="string">"Could not send event to complete DataSource initialization ("</span></span><br><span class="line">						+ ex.getMessage() + <span class="string">")"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//运行插入数据的sql语句</span></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">runDataScripts</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		List&lt;Resource&gt; scripts = getScripts(<span class="string">"spring.datasource.data"</span>,</span><br><span class="line">				<span class="keyword">this</span>.properties.getData(), <span class="string">"data"</span>);</span><br><span class="line">		String username = <span class="keyword">this</span>.properties.getDataUsername();</span><br><span class="line">		String password = <span class="keyword">this</span>.properties.getDataPassword();</span><br><span class="line">		runScripts(scripts, username, password);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DataSourceInitializer 提供了建表sql和插入数据sql的执行方法</p>
+<ul>
+<li>runSchemaScripts() ：建表sql （指定文件名- schema-*.sql）</li>
+<li>runDataScripts()：插入数据sql（指定文件名- data-*.sql）</li>
+</ul>
+<h3 id="2、Druid数据源"><a href="#2、Druid数据源" class="headerlink" title="2、Druid数据源"></a>2、Druid数据源</h3><h4 id="1）application-yml"><a href="#1）application-yml" class="headerlink" title="1）application.yml"></a>1）application.yml</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr"> datasource:</span></span><br><span class="line"><span class="attr">   username:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">   password:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">   url:</span> <span class="attr">jdbc:mysql://localhost:8080/mydb4</span></span><br><span class="line"><span class="attr">   driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="attr">   type:</span> <span class="string">com.alibaba.druid.pool.DruidDataSource</span></span><br><span class="line"><span class="comment">#  数据源其他配置</span></span><br><span class="line"><span class="comment">#  以下配置需要在DruidSource的配置类中绑定</span></span><br><span class="line"><span class="attr">   initialSize:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">   minIdle:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">   maxActive:</span> <span class="number">20</span></span><br><span class="line"><span class="attr">   maxWait:</span> <span class="number">60000</span></span><br><span class="line"><span class="attr">   timeBetweenEvictionRunsMillis:</span> <span class="number">60000</span></span><br><span class="line"><span class="attr">   minEvictableIdleTimeMillis:</span> <span class="number">300000</span></span><br><span class="line"><span class="attr">   validationQuery:</span> <span class="string">SELECT</span> <span class="number">1</span> <span class="string">FROM</span> <span class="string">DUAL</span></span><br><span class="line"><span class="attr">   testWhileIdle:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">   testOnBorrow:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">   testOnReturn:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">   poolPreparedStatements:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment">#  配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙</span></span><br><span class="line"><span class="attr">   filters:</span> <span class="string">stat,wall,log4j</span></span><br><span class="line"><span class="attr">   maxPoolPreparedStatementPerConnectionSize:</span> <span class="number">20</span></span><br><span class="line"><span class="attr">   useGlobalDataSourceStat:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">   connectionProperties:</span> <span class="string">druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500</span></span><br></pre></td></tr></table></figure>
+<h4 id="2）配置Druid数据源"><a href="#2）配置Druid数据源" class="headerlink" title="2）配置Druid数据源"></a>2）配置Druid数据源</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyDataSource</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定yml文件中配置的属性  </span></span><br><span class="line">    <span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource"</span>)</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">druid</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//配置druid</span></span><br><span class="line">    <span class="comment">//配置登录后台的servlet</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServletRegistrationBean <span class="title">statViewServlet</span><span class="params">()</span></span>&#123;</span><br><span class="line">        ServletRegistrationBean bean = <span class="keyword">new</span> ServletRegistrationBean(<span class="keyword">new</span> StatViewServlet(),<span class="string">"/druid/*"</span>);</span><br><span class="line">        Map&lt;String ,String&gt;  initParams = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="comment">//设置初始化参数</span></span><br><span class="line">        initParams.put(<span class="string">"loginUsername"</span>,<span class="string">"admin"</span>);</span><br><span class="line">        initParams.put(<span class="string">"loginPassword"</span>,<span class="string">"123456"</span>);</span><br><span class="line">        initParams.put(<span class="string">"allow"</span>,<span class="string">""</span>);</span><br><span class="line">        bean.setInitParameters(initParams);</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置监控的filter</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FilterRegistrationBean <span class="title">webStatFilter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        FilterRegistrationBean bean = <span class="keyword">new</span> FilterRegistrationBean();</span><br><span class="line">        bean.setFilter(<span class="keyword">new</span> WebStatFilter());</span><br><span class="line">        Map&lt;String,String&gt; initParams = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="comment">// 除了 静态资源和监控后台</span></span><br><span class="line">        initParams.put(<span class="string">"executions"</span>,<span class="string">"*.js,*.css,/druid/*"</span>);</span><br><span class="line">        bean.setInitParameters(initParams);</span><br><span class="line">        <span class="comment">// 拦截所有请求</span></span><br><span class="line">        bean.setUrlPatterns(Arrays.asList(<span class="string">"/*"</span>));</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>访问后台监控 <code>http://localhost:8080/druid</code></p>
+<p><img src="/2019/05/22/SpringBoot之数据源/1.png" alt> </p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">SpringBoot之数据源</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/22/SpringBoot之数据源/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-MySQL" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -920,178 +1176,6 @@
 
 
   
-    <article id="post-Hibernate-note2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/26/Hibernate-note2/">Hibernate_note2</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/26/Hibernate-note2/" class="archive-article-date">
-  	<time datetime="2019-04-26T02:45:40.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="Hibernate中的对象"><a href="#Hibernate中的对象" class="headerlink" title="Hibernate中的对象"></a>Hibernate中的对象</h3><h4 id="对象状态"><a href="#对象状态" class="headerlink" title="对象状态"></a>对象状态</h4><p>瞬时态|临时态  </p>
-<ul>
-<li>transient，session没有缓存对象，数据库也没有对应记录； OID特点：没有值</li>
-</ul>
-<p>持久态  </p>
-<ul>
-<li>persistent，session缓存对象，数据库最终会有记录（事务没有提交也行）; OID特点：有值  </li>
-<li><strong>特点</strong>： HIbernate自动将持久态对象的变化同步到数据库(持久态的ID不允许被修改)</li>
-</ul>
-<p>游离态  </p>
-<ul>
-<li>detached，session没有缓存对象，数据库有记录; OID特点：有值</li>
-</ul>
-<h3 id="Hibernate的一级缓存-线程级缓存"><a href="#Hibernate的一级缓存-线程级缓存" class="headerlink" title="Hibernate的一级缓存(线程级缓存)"></a>Hibernate的一级缓存(线程级缓存)</h3><h4 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h4><p>当获得一次会话（session），hibernate在session中创建多个集合（map&lt;Serilzable,Object&gt;），用于存放操作数据（PO对象），为程序优化服务，如果之后需要相应的数据，hibernate优先从session缓存中获取，如果有就使用；如果没有再查询数据库。当session关闭时，一级缓存销毁<br><em>Session中快照 ：</em> session第一次查询时从数据库中取出的一份数据拷贝，始终与数据库的记录保持一致，如果缓存的对象与快照一致，则不再向数据库执行操作<br><strong>Query和Criteria的缓存机制：</strong> 查询的结果会组装成对应实体类对象，放入缓存，但查询还是会操作数据库，即每查一次就操作数据库一次 &lt;?&gt;</p>
-        
-          <a class="article-more-a" href="/2019/04/26/Hibernate-note2/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Hibernate_note2</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/26/Hibernate-note2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-HTTP协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/04/25/HTTP协议/">HTTP协议</a>
-    </h1>
-  
-
-        
-        <a href="/2019/04/25/HTTP协议/" class="archive-article-date">
-  	<time datetime="2019-04-25T11:51:36.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="HTTP协议概述"><a href="#HTTP协议概述" class="headerlink" title="HTTP协议概述"></a>HTTP协议概述</h3><p>HTTP是HyperText Transfer Protocol(超文本传输协议)，用于定义WEB浏览器与WEB服务器之间交换数据的过程及数据本身的格式。  </p>
-<h3 id="请求部分"><a href="#请求部分" class="headerlink" title="请求部分"></a>请求部分</h3><h4 id="请求消息行"><a href="#请求消息行" class="headerlink" title="请求消息行"></a>请求消息行</h4><p><strong>包括：请求方式、URI、传输协议</strong>  </p>
-<pre><code>GET  /day08_02/1.html  HTTP/1.1
-</code></pre><p>关于GET和POST请求方式的区别  </p>
-<ul>
-<li><p>GET请求：明文传输、相对不安全、传输数据量有限  </p>
-</li>
-<li><p>POST请求：数据封装在消息正文、相对安全、理论上没有数据量限制<br><a href="http://www.w3school.com.cn/tags/html_ref_httpmethods.asp" target="_blank" rel="noopener">HTTP 方法：GET 对比 POST</a><br>另一种思路（Mark一下）：<a href="https://www.cnblogs.com/logsharing/p/8448446.html" target="_blank" rel="noopener">从TCP/IP协议来看GET和POST</a>  </p></li></ul>
-        
-          <a class="article-more-a" href="/2019/04/25/HTTP协议/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">HTTP协议</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/04/25/HTTP协议/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1189,15 +1273,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Docker-入门</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">HTTP协议</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1205,7 +1281,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">SSH框架持久层设计</a>
+                <a href="javascript:void(0)" class="js-tag color3">JVM内存模型及性能调优</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1213,7 +1289,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">SpringBoot之整合Tomcat</a>
+                <a href="javascript:void(0)" class="js-tag color1">SSH框架持久层设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">HashMap源码之JDK1.7</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Docker-入门</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1221,7 +1309,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Tomcat_note1</a>
+                <a href="javascript:void(0)" class="js-tag color5">SpringBoot之整合Tomcat</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1230,6 +1318,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring Boot之配置文件</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">SpringBoot之数据源</a>
               </li>
              
               <li class="article-tag-list-item">
